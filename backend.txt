@@ -1,0 +1,349 @@
+Backend API - Universidad Atlántida Argentina
+Este backend proporciona una API RESTful para el sistema de gestión académica de la Universidad Atlántida Argentina.
+
+Requisitos Previos
+Node.js (v14 o superior)
+MySQL (v5.7 o superior)
+npm o yarn
+Instalación
+Clonar el repositorio:
+git clone [URL_DEL_REPOSITORIO]
+cd backend
+Instalar dependencias:
+npm install
+Configurar variables de entorno: Crear un archivo .env en la raíz del proyecto con las siguientes variables:
+DB_HOST=localhost
+DB_USER=tu_usuario
+DB_PASSWORD=tu_contraseña
+DB_NAME=universidad
+JWT_SECRET=tu_secreto_jwt
+Iniciar el servidor:
+npm start
+Estructura del Proyecto
+src/
+├── config/         # Configuraciones (base de datos, etc.)
+├── controllers/    # Controladores de la API
+├── middleware/     # Middleware (autenticación, etc.)
+├── routes/         # Rutas de la API
+└── utils/          # Utilidades y helpers
+Endpoints de la API
+Autenticación
+POST /api/auth/login
+Inicia sesión y obtiene un token JWT.
+
+Body:
+
+{
+  "usuario": "12345678",
+  "password": "contraseña"
+}
+Respuesta:
+
+{
+  "id": 123,
+  "usuario": "12345678",
+  "nombreapellido": "Juan Pérez",
+  "email": "juan@email.com",
+  "token": "jwt_token"
+}
+POST /api/auth/request
+Solicita la creación de una cuenta de usuario.
+
+Body:
+
+{
+  "dni": "12345678"
+}
+Respuesta:
+
+{
+  "message": "Ya puedes ingresar a tu cuenta en Autogestión Universitaria"
+}
+POST /api/auth/recovery
+Solicita la recuperación de contraseña.
+
+Body:
+
+{
+  "dni": "12345678"
+}
+POST /api/auth/refresh-token
+Renueva el token JWT.
+
+Headers:
+
+Authorization: Bearer <token>
+Usuario
+GET /api/user/accept-terms
+Acepta los términos y condiciones.
+
+Headers:
+
+Authorization: Bearer <token>
+Respuesta:
+
+{
+  "estado": true,
+  "mensaje": "Terminos aceptados correctamente"
+}
+GET /api/user/menu
+Obtiene el menú de navegación del usuario.
+
+Headers:
+
+Authorization: Bearer <token>
+GET /api/user/carreras
+Obtiene las carreras del usuario.
+
+Headers:
+
+Authorization: Bearer <token>
+POST /api/user/carrera
+Selecciona una carrera específica.
+
+Headers:
+
+Authorization: Bearer <token>
+Body:
+
+{
+  "pkinscripcion_carrera": 123
+}
+Respuesta:
+
+{
+  "estado": true,
+  "mensaje": "Carrera seleccionada correctamente"
+}
+Perfil
+GET /api/perfil/datosPersonales
+Obtiene los datos personales del usuario autenticado.
+
+Headers:
+
+Authorization: Bearer <token>
+Respuesta:
+
+{
+  "estado": true,
+  "datos": {
+    "dni": "12345678",
+    "nombre": "Juan",
+    "apellido": "Pérez",
+    "email": "juan@email.com",
+    "telefono": "1234567890",
+    "carreras": [
+      {
+        "matricula": "12345",
+        "legajo": "67890",
+        "carrera": "Ingeniería en Sistemas",
+        "carrera_bis": "Systems Engineering",
+        "fecha_inscripcion": "2023-03-01"
+      }
+    ]
+  }
+}
+POST /api/perfil/progresoAcademico
+Obtiene el progreso académico del usuario en una carrera específica.
+
+Headers:
+
+Authorization: Bearer <token>
+Body:
+
+{
+  "pkinscripcion_carrera": 123
+}
+Respuesta:
+
+{
+  "estado": true,
+  "datos": {
+    "total_materias": 40,
+    "materias_aprobadas": 25,
+    "promedio": 7.5
+  }
+}
+POST /api/perfil/materiasCursadas
+Obtiene el detalle de todas las materias cursadas en una carrera.
+
+Headers:
+
+Authorization: Bearer <token>
+Body:
+
+{
+  "pkinscripcion_carrera": 123
+}
+Respuesta:
+
+{
+  "estado": true,
+  "datos": {
+    "materias": [
+      {
+        "id_materia": 1,
+        "nombre_materia": "Matemática I",
+        "codigo": "MAT101",
+        "anio": 1,
+        "cuatrimestre": 1,
+        "nota_total": 8,
+        "estado": "Aprobada",
+        "fecha_inscripcion": "2023-03-01"
+      }
+    ]
+  }
+}
+POST /api/perfil/documentacion
+Obtiene el estado de la documentación del usuario.
+
+Headers:
+
+Authorization: Bearer <token>
+Body:
+
+{
+  "pkinscripcion_carrera": 123
+}
+Respuesta:
+
+{
+  "estado": true,
+  "datos": {
+    "documentacion": [
+      {
+        "carrera": "Ingeniería en Sistemas",
+        "carrera_bis": "Systems Engineering",
+        "pkinscripcion_carrera": 123,
+        "fecha_inscripcion": "2023-03-01",
+        "total_requeridos": 8,
+        "total_completos": 5,
+        "total_pendientes": 3,
+        "documentos": [
+          {
+            "nombre": "Fotocopia DNI",
+            "estado": "Completo",
+            "requerido": true
+          }
+        ]
+      }
+    ]
+  }
+}
+Cuenta Corriente
+POST /api/cuentacorriente
+Obtiene el estado de la cuenta corriente del usuario para una carrera específica.
+
+Headers:
+
+Authorization: Bearer <token>
+Respuesta:
+
+{
+  "estado": true,
+  "datos": {
+    "carrera": {
+      "carrera": "Ingeniería en Sistemas",
+      "carrera_bis": "Systems Engineering",
+      "fecha_inscripcion": "2023-03-01"
+    },
+    "conceptos_pagados": [
+      {
+        "pkflujo": 1,
+        "fecha_pago": "2023-03-15",
+        "fecha_vencimiento": "2023-03-10",
+        "importe": 15000.0,
+        "concepto": "Matrícula",
+        "conceptosl": "Registration",
+        "tipo_concepto": "Matrícula"
+      }
+    ],
+    "conceptos_impagos": [
+      {
+        "pkflujo": 2,
+        "fecha_vencimiento": "2023-04-10",
+        "importe": 15000.0,
+        "concepto": "Cuota 1",
+        "conceptosl": "Installment 1",
+        "tipo_concepto": "Cuota"
+      }
+    ],
+    "planes_pago": [
+      {
+        "pkplan": 1,
+        "fecha_creacion": "2023-03-01",
+        "cant_cuotas": 12,
+        "monto_total": 180000.0,
+        "estado": 1,
+        "concepto": "Matrícula",
+        "conceptosl": "Registration",
+        "tipo_concepto": "Matrícula",
+        "cuotas_pagadas": 3
+      }
+    ],
+    "resumen": {
+      "total_pagado": 45000.0,
+      "total_impago": 135000.0,
+      "cantidad_planes_pago": 1
+    }
+  }
+}
+Biblioteca
+GET /api/biblioteca/libros
+Obtiene el listado de libros disponibles.
+
+Headers:
+
+Authorization: Bearer <token>
+Body:
+
+{
+  "busqueda": "matematica",
+  "facultad": 1,
+  "tipo": 1,
+  "pagina": 1,
+  "limite": 10
+}
+GET /api/biblioteca/catalogo
+Obtiene el catálogo de la biblioteca.
+
+Headers:
+
+Authorization: Bearer <token>
+General
+GET /api/general/facultades
+Obtiene el listado de facultades.
+
+Headers:
+
+Authorization: Bearer <token>
+GET /api/general/tiposArchivos
+Obtiene los tipos de archivos disponibles.
+
+Headers:
+
+Authorization: Bearer <token>
+GET /api/general/sedes
+Obtiene el listado de sedes.
+
+Headers:
+
+Authorization: Bearer <token>
+Seguridad
+Todos los endpoints (excepto login) requieren autenticación mediante JWT
+El token debe enviarse en el header Authorization: Bearer <token>
+Los tokens expiran después de 24 horas
+Manejo de Errores
+La API utiliza códigos de estado HTTP estándar:
+
+200: Éxito
+400: Error en la solicitud
+401: No autorizado
+404: Recurso no encontrado
+500: Error interno del servidor
+Las respuestas de error siguen este formato:
+
+{
+  "estado": false,
+  "mensaje": "Descripción del error"
+}
