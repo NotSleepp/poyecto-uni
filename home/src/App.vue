@@ -20,8 +20,8 @@
 </template>
 
 <script>
-import ModalListener from './components/ModalListener.vue';
-import NotificationListener from './components/NotificationListener.vue';
+import ModalListener from 'host/ModalListener';
+import NotificationListener from 'host/NotificationListener';
 
 export default {
   name: 'App',

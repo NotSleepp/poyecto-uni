@@ -145,11 +145,11 @@
 import { ref, onMounted, watch } from 'vue';
 import { useUserStore } from '../stores/userStore';
 import { useCareerStore } from '../stores/careerStore';
-import { useRouter } from 'vue-router';
+import eventBus, { EventTypes } from 'host/eventBus';
+import CareerCard from '../components/CareerCard.vue';
 
 const userStore = useUserStore();
 const careerStore = useCareerStore();
-const router = useRouter();
 
 const studentData = ref({
   nombre: "",
@@ -183,8 +183,17 @@ const formatDate = (dateString) => {
 };
 
 const handleCareerClick = (carrera) => {
+  console.log('[Perfil] handleCareerClick carrera', carrera)
   careerStore.setSelectedCareer(carrera);
-  router.push({ name: 'CareerDetails' });
+  const bus = (globalThis.__central_event_bus__?.eventBus) || eventBus;
+  bus.emit(EventTypes.SHOW_MODAL, {
+    title: 'Detalle de la Carrera',
+    component: CareerCard,
+    props: {
+      carrera
+    },
+    hideActions: true
+  });
 };
 
 // Observar cambios en el store

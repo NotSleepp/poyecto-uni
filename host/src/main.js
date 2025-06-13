@@ -26,7 +26,7 @@ const initApp = async () => {
     // Inicializar los módulos remotos
     await Promise.all([
       import('home/store').then(() => console.log('✅ Store remoto cargado')),
-      import('home/eventBus').then(() => console.log('✅ EventBus remoto cargado')),
+      // EventBus se importa localmente por primera vez en la propia app; el remote lo reutiliza por el singleton global
       import('perfil/careerStore').then(() => console.log('✅ Store de carreras cargado'))
     ]);
     console.log('✅ Todos los módulos remotos cargados correctamente');

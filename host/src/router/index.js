@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
-import eventBus, { EventTypes } from "home/eventBus";
+import eventBus, { EventTypes } from "host/eventBus";
 import { useAuthStore } from "../stores/authStore";
 
 // Configuración de NProgress

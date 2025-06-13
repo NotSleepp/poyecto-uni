@@ -14,19 +14,16 @@
         <component :is="Component" />
       </transition>
     </router-view>
-    <ModalListener />
     <NotificationListener />
   </div>
 </template>
 
 <script>
-import ModalListener from './components/ModalListener.vue';
-import NotificationListener from './components/NotificationListener.vue';
+import NotificationListener from 'host/NotificationListener';
 
 export default {
   name: 'App',
   components: {
-    ModalListener,
     NotificationListener
   }
 };

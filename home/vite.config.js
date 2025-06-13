@@ -10,12 +10,16 @@ export default defineConfig({
     federation({
       name: "remote",
       filename: "remoteEntry.js",
+      remotes: {
+        host: {
+          external: "https://autogestion2.atlantida.edu.ar/assets/remoteEntry.js",
+          format: 'esm',
+          from: 'vite'
+        }
+      },
       exposes: {
         "./Home": "./src/views/Home.vue",
-        "./store": "./src/stores/sharedStore.js",
-        "./eventBus": "./src/utils/eventBus.js",
-        "./NotificationListener": "./src/components/NotificationListener.vue",
-        "./ModalListener": "./src/components/ModalListener.vue"
+        "./store": "./src/stores/sharedStore.js"
       },
       shared: ["vue", "pinia", "vue-router"],
     }),
@@ -38,6 +42,10 @@ export default defineConfig({
         minifyInternalExports: false,
       },
     },
+  },
+  server: {
+    port: 5000,
+    cors: true
   },
   base: "/frontend/home/",
 });

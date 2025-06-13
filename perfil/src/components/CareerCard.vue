@@ -73,7 +73,7 @@
 
 <script setup>
 import { defineProps } from 'vue';
-import eventBus, { EventTypes } from '../utils/eventBus';
+import eventBus, { EventTypes } from 'host/eventBus';
 import AcademicHistoryModal from './AcademicHistoryModal.vue';
 import DocumentationModal from './DocumentationModal.vue';
 
@@ -85,7 +85,8 @@ const props = defineProps({
 });
 
 const showAcademicHistory = () => {
-  eventBus.emit(EventTypes.SHOW_MODAL, {
+  const bus = (globalThis.__central_event_bus__?.eventBus) || eventBus;
+  bus.emit(EventTypes.SHOW_MODAL, {
     title: 'Historial Académico',
     component: AcademicHistoryModal,
     props: {
@@ -96,7 +97,8 @@ const showAcademicHistory = () => {
 };
 
 const showDocumentation = () => {
-  eventBus.emit(EventTypes.SHOW_MODAL, {
+  const bus = (globalThis.__central_event_bus__?.eventBus) || eventBus;
+  bus.emit(EventTypes.SHOW_MODAL, {
     title: 'Documentación',
     component: DocumentationModal,
     props: {

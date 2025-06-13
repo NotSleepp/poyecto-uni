@@ -13,7 +13,13 @@ export default defineConfig({
     vue(),
     federation({
       name: "host",
+      filename: "remoteEntry.js",
       remotes: {
+        host: {
+          external:"https://autogestion2.atlantida.edu.ar/assets/remoteEntry.js",
+          format: 'esm',
+          from: 'vite'
+        },
         home: {
           external: "https://autogestion2.atlantida.edu.ar/frontend/home/assets/remoteEntry.js",
           format: 'esm',
@@ -29,6 +35,11 @@ export default defineConfig({
           : "https://autogestion2.atlantida.edu.ar/frontend/perfil/assets/remoteEntry.js"
       },
       shared: ["vue", "vue-router", "pinia"],
+      exposes: {
+        "./eventBus": "./src/utils/eventBus.js",
+        "./NotificationListener": "./src/components/NotificationListener.vue",
+        "./ModalListener": "./src/components/ModalListener.vue",
+      },
     }),
   ],
   resolve: {
