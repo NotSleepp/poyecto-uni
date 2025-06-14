@@ -30,15 +30,18 @@ export default defineConfig({
           format: 'esm',
           from: 'vite'
         },
-        perfil: isDev
-          ? "http://localhost:5003/assets/remoteEntry.js"
-          : "https://autogestion2.atlantida.edu.ar/frontend/perfil/assets/remoteEntry.js"
+        perfil: {
+          external: "https://autogestion2.atlantida.edu.ar/frontend/perfil/assets/remoteEntry.js",
+          format: 'esm',
+          from: 'vite'
+        }
       },
       shared: ["vue", "vue-router", "pinia"],
       exposes: {
         "./eventBus": "./src/utils/eventBus.js",
         "./NotificationListener": "./src/components/NotificationListener.vue",
         "./ModalListener": "./src/components/ModalListener.vue",
+        "./authStore": "./src/stores/authStore.js",
       },
     }),
   ],

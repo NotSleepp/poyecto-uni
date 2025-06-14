@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 
 export const useSharedStore = defineStore('shared', {
   state: () => ({
-    token: null,
+    currentUser: null,
     theme: 'light',
     notifications: [],
     isDark: localStorage.getItem('theme') === 'dark' || 
@@ -10,16 +10,18 @@ export const useSharedStore = defineStore('shared', {
   }),
   
   getters: {
-    isAuthenticated: (state) => !!state.token,
+    isAuthenticated: (state) => !!state.currentUser,
+    userRole: (state) => state.currentUser?.role,
+    unreadNotifications: (state) => state.notifications.filter(n => !n.read).length,
   },
   
   actions: {
-    setToken(token) {
-      this.token = token;
+    setUser(user) {
+      this.currentUser = user;
     },
     
-    clearToken() {
-      this.token = null;
+    logout() {
+      this.currentUser = null;
     },
     
     toggleTheme() {

@@ -1,1 +1,1 @@
-export const token = "1234567890";
+export const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjkyNCwidXNlckluZm8iOnsibm9tYnJlIjoiTEVPTkFSRE8gUEFCTE8gTUFOTkFOSUNFIiwiZm90byI6IiIsImRuaSI6IjMyMDAyODIyIn0sImlhdCI6MTc0OTg0MzkxMCwiZXhwIjoxNzQ5OTMwMzEwfQ.E95mMFU6fRJWa89lgz3GXZ6yq6A5l-L5B2Azz30UGO0";

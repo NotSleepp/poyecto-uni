@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { useSharedStore } from './sharedStore';
+import { useAuthStore } from './authStore';
 
 const API_URL = 'https://backend.autogestion.atlantida.edu.ar/api';
 
@@ -22,33 +22,28 @@ export const useCareerStore = defineStore('career', {
 
   actions: {
     async fetchCareers() {
-      const sharedStore = useSharedStore();
-      if (!sharedStore.token) return;
-
+      const auth = useAuthStore();
+      const token = auth.token?.value ?? auth.token;
+      if (!token) return;
       this.isLoading = true;
       this.error = null;
-
       try {
         const response = await fetch(`${API_URL}/user/carreras`, {
           headers: {
-            'Authorization': `Bearer ${sharedStore.token}`,
+            Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
           }
         });
-
-        if (!response.ok) {
-          throw new Error('Error al obtener carreras');
-        }
-
+        if (!response.ok) throw new Error('Error al obtener carreras');
         const data = await response.json();
         if (data.estado && data.datos) {
           this.careers = data.datos;
         } else {
           throw new Error(data.mensaje || 'Error al obtener carreras');
         }
-      } catch (error) {
-        console.error('Error al obtener carreras:', error);
-        this.error = error.message;
+      } catch (e) {
+        console.error(e);
+        this.error = e.message;
         this.careers = [];
       } finally {
         this.isLoading = false;
@@ -56,26 +51,21 @@ export const useCareerStore = defineStore('career', {
     },
 
     async selectCareer(pkinscripcion_carrera) {
-      const sharedStore = useSharedStore();
-      if (!sharedStore.token) return;
-
+      const auth = useAuthStore();
+      const token = auth.token?.value ?? auth.token;
+      if (!token) return;
       this.isLoading = true;
       this.error = null;
-
       try {
         const response = await fetch(`${API_URL}/user/carrera`, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${sharedStore.token}`,
+            Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({ pkinscripcion_carrera })
         });
-
-        if (!response.ok) {
-          throw new Error('Error al seleccionar carrera');
-        }
-
+        if (!response.ok) throw new Error('Error al seleccionar carrera');
         const data = await response.json();
         if (data.estado) {
           this.selectedCareer = this.careers.find(c => c.pkinscripcion_carrera === pkinscripcion_carrera);
@@ -85,92 +75,74 @@ export const useCareerStore = defineStore('career', {
         } else {
           throw new Error(data.mensaje || 'Error al seleccionar carrera');
         }
-      } catch (error) {
-        console.error('Error al seleccionar carrera:', error);
-        this.error = error.message;
+      } catch (e) {
+        console.error(e);
+        this.error = e.message;
       } finally {
         this.isLoading = false;
       }
     },
 
     async fetchAcademicProgress(pkinscripcion_carrera) {
-      const sharedStore = useSharedStore();
-      if (!sharedStore.token) return;
-
+      const auth = useAuthStore();
+      const token = auth.token?.value ?? auth.token;
+      if (!token) return;
       try {
-        const response = await fetch(`${API_URL}/perfil/progresoAcademico`, {
+        const res = await fetch(`${API_URL}/perfil/progresoAcademico`, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${sharedStore.token}`,
+            Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({ pkinscripcion_carrera })
         });
-
-        if (!response.ok) {
-          throw new Error('Error al obtener progreso académico');
-        }
-
-        const data = await response.json();
-        if (data.estado && data.datos) {
-          this.academicProgress = data.datos;
-        }
-      } catch (error) {
-        console.error('Error al obtener progreso académico:', error);
+        if (!res.ok) throw new Error('Error al obtener progreso académico');
+        const data = await res.json();
+        if (data.estado && data.datos) this.academicProgress = data.datos;
+      } catch (e) {
+        console.error(e);
       }
     },
 
     async fetchCoursedSubjects(pkinscripcion_carrera) {
-      const sharedStore = useSharedStore();
-      if (!sharedStore.token) return;
-
+      const auth = useAuthStore();
+      const token = auth.token?.value ?? auth.token;
+      if (!token) return;
       try {
-        const response = await fetch(`${API_URL}/perfil/materiasCursadas`, {
+        const res = await fetch(`${API_URL}/perfil/materiasCursadas`, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${sharedStore.token}`,
+            Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({ pkinscripcion_carrera })
         });
-
-        if (!response.ok) {
-          throw new Error('Error al obtener materias cursadas');
-        }
-
-        const data = await response.json();
-        if (data.estado && data.datos) {
-          this.coursedSubjects = data.datos.materias;
-        }
-      } catch (error) {
-        console.error('Error al obtener materias cursadas:', error);
+        if (!res.ok) throw new Error('Error al obtener materias cursadas');
+        const data = await res.json();
+        if (data.estado && data.datos) this.coursedSubjects = data.datos.materias;
+      } catch (e) {
+        console.error(e);
       }
     },
 
     async fetchDocumentation(pkinscripcion_carrera) {
-      const sharedStore = useSharedStore();
-      if (!sharedStore.token) return;
-
+      const auth = useAuthStore();
+      const token = auth.token?.value ?? auth.token;
+      if (!token) return;
       try {
-        const response = await fetch(`${API_URL}/perfil/documentacion`, {
+        const res = await fetch(`${API_URL}/perfil/documentacion`, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${sharedStore.token}`,
+            Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({ pkinscripcion_carrera })
         });
-
-        if (!response.ok) {
-          throw new Error('Error al obtener documentación');
-        }
-
-        const data = await response.json();
-        if (data.estado && data.datos) {
-          this.documentation = data.datos;
-        }
-      } catch (error) {
-        console.error('Error al obtener documentación:', error);
+        if (!res.ok) throw new Error('Error al obtener documentación');
+        const data = await res.json();
+        if (data.estado && data.datos) this.documentation = data.datos;
+      } catch (e) {
+        console.error(e);
       }
     },
 
@@ -179,6 +151,10 @@ export const useCareerStore = defineStore('career', {
       this.academicProgress = null;
       this.coursedSubjects = [];
       this.documentation = null;
+    },
+
+    setSelectedCareer(carrera) {
+      this.selectedCareer = carrera;
     }
   }
 }); 

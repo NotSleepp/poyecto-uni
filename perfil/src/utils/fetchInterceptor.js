@@ -1,4 +1,5 @@
 import { useLoadingStore } from "../stores/loading";
+import { useAuthStore } from "../stores/authStore";
 
 // Función para interceptar y modificar todos los fetch
 export function initFetchInterceptor() {
@@ -11,13 +12,15 @@ export function initFetchInterceptor() {
     try {
       const [resource, config = {}] = args;
 
-      // Obtener token del localStorage
-      const token = localStorage.getItem("token");
+      // Obtener token del store (puede ser Ref o string)
+      const authStore = useAuthStore();
+      const token = authStore.token?.value ?? authStore.token;
 
       // Configurar headers con el token
       const headers = {
         ...config.headers,
-        Authorization: `Bearer ${token}`,
+        // Solo incluir Authorization si existe token
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       };
 
       // Realizar la petición con el token
@@ -26,7 +29,7 @@ export function initFetchInterceptor() {
       // Verificar si existe el header X-New-Token
       const newToken = response.headers.get("X-New-Token");
       if (newToken) {
-        localStorage.setItem("token", newToken);
+        authStore.setToken(newToken);
       }
       return response;
     } catch (error) {

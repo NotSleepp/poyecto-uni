@@ -1,13 +1,14 @@
-import { createApp } from "vue";
+import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-import App from "./App.vue";
-import "./assets/style.css";
-import router from "./router";
+import App from './App.vue';
+import router from './router';
+import './assets/style.css';
+
+console.log('[Perfil] Iniciando aplicación standalone');
 
 const app = createApp(App);
-const pinia = createPinia();
-
-app.use(pinia);
+app.use(createPinia());
 app.use(router);
+app.mount('#app');
 
-app.mount("#app");
+console.log('[Perfil] Aplicación montada');

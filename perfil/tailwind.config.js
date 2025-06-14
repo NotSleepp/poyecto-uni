@@ -23,6 +23,10 @@ export default {
         },
         // Ejemplo de colores personalizados
         'secondary': '#4285f4',
+        brand: {
+          DEFAULT: '#3d4e6c',
+          light: '#5a6d8f'
+        },
       },
       spacing: {
         // Ejemplo de espaciados personalizados
@@ -51,6 +55,9 @@ export default {
           '0%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(100%)' },
         },
+      },
+      fontFamily: {
+        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
     },
   },

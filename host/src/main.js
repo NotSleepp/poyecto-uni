@@ -23,10 +23,11 @@ const initApp = async () => {
   console.log('🚀 Iniciando la aplicación...');
   try {
     console.log('📦 Intentando cargar módulos remotos...');
-    // Inicializar los módulos remotos
-    await Promise.all([
+    // Pre-carga de stores remotos. Utilizamos Promise.allSettled para que la app no se detenga
+    // si algún micro-front aún no está disponible.
+    await Promise.allSettled([
       import('home/store').then(() => console.log('✅ Store remoto cargado')),
-      // EventBus se importa localmente por primera vez en la propia app; el remote lo reutiliza por el singleton global
+      // `perfil/careerStore` puede no estar disponible en ciertos entornos; por eso lo manejamos de forma resiliente.
       import('perfil/careerStore').then(() => console.log('✅ Store de carreras cargado'))
     ]);
     console.log('✅ Todos los módulos remotos cargados correctamente');

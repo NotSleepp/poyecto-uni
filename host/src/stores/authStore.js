@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import router from '../router'
-import { useSharedStore } from 'perfil/store'
+//import { useSharedStore } from 'perfil/store'
 
 const API_URL = 'https://backend.autogestion.atlantida.edu.ar/api'
 
@@ -10,13 +10,13 @@ export const useAuthStore = defineStore('auth', () => {
   const isReady = ref(false)
   const isTransitioning = ref(false)
   const user = ref(null)
-  const sharedStore = useSharedStore()
+  const tokenRef = ref(localStorage.getItem('token'))
+  //const sharedStore = useSharedStore()
 
   function initAuth() {
-    const token = localStorage.getItem('token')
-    if (token) {
+    if (tokenRef.value) {
       isAuthenticated.value = true
-      sharedStore.setToken(token)
+      //sharedStore.setToken(token)
       fetchUserProfile()
     }
     isReady.value = true
@@ -43,8 +43,7 @@ export const useAuthStore = defineStore('auth', () => {
       }
 
       if (data.token) {
-        localStorage.setItem('token', data.token)
-        sharedStore.setToken(data.token)
+        setToken(data.token)
         
         // Guardar datos básicos del usuario
         user.value = {
@@ -83,11 +82,9 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       console.log('🔐 Iniciando proceso de logout...')
       isTransitioning.value = true
-      localStorage.removeItem('token')
-      isAuthenticated.value = false
-      user.value = null
+      setToken(null)
       // Limpiar el token en el store compartido
-      sharedStore.clearToken()
+      //sharedStore.clearToken()
       await router.push('/login')
     } catch (error) {
       console.error('Error al cerrar sesión:', error)
@@ -180,16 +177,28 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  function setToken(newToken) {
+    if (newToken) {
+      localStorage.setItem('token', newToken)
+    } else {
+      localStorage.removeItem('token')
+    }
+    tokenRef.value = newToken
+    isAuthenticated.value = !!newToken
+  }
+
   return {
     isAuthenticated,
     isReady,
     isTransitioning,
     user,
+    token: computed(() => tokenRef.value),
     initAuth,
     login,
     logout,
     requestAccount,
     recoverPassword,
-    fetchUserProfile
+    fetchUserProfile,
+    setToken
   }
 }) 
