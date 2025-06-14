@@ -85,6 +85,7 @@ const routes = [
   },
   {
     path: "/perfil",
+    redirect: "/perfil/datos-personales",
     children: [
       {
         path: "datos-personales",

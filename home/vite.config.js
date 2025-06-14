@@ -21,7 +21,11 @@ export default defineConfig({
         "./Home": "./src/views/Home.vue",
         "./store": "./src/stores/sharedStore.js"
       },
-      shared: ["vue", "pinia", "vue-router"],
+      shared: {
+        vue: { singleton: true },
+        pinia: { singleton: true },
+        'vue-router': { singleton: true }
+      },
     }),
   ],
   css: {

@@ -36,7 +36,17 @@ export default defineConfig({
           from: 'vite'
         }
       },
-      shared: ["vue", "vue-router", "pinia"],
+      // Aseguramos que host y remotos compartan **la misma** instancia de Vue, Vue-Router y Pinia.
+      // Si no se especifica la versión requerida, el runtime de federación asume "undefined" y los
+      // micro-fronts pueden terminar cargando su propia copia, lo que provoca errores como
+      //   provider support vue(undefined) is not satisfied requiredVersion(^3.4.15)
+      //   provider support pinia(undefined) is not satisfied requiredVersion(^3.0.3)
+      // Con singleton: true forzamos una única copia en toda la aplicación.
+      shared: {
+        vue: { singleton: true, version: "^3.4.15" },
+        "vue-router": { singleton: true, version: "^4.2.5" },
+        pinia: { singleton: true, version: "^3.0.3" }
+      },
       exposes: {
         "./eventBus": "./src/utils/eventBus.js",
         "./NotificationListener": "./src/components/NotificationListener.vue",

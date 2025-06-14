@@ -25,9 +25,9 @@ export default defineConfig({
         "./sharedStore": "./src/stores/sharedStore.js"
       },
       shared: {
-        vue: { singleton: true, requiredVersion: '^3.4.15' },
-        pinia: { singleton: true, requiredVersion: '^3.0.3' },
-        'vue-router': { singleton: true, requiredVersion: '^4.2.5' }
+        vue: { singleton: true },
+        pinia: { singleton: true },
+        'vue-router': { singleton: true }
       },
     }),
   ],
