@@ -22,7 +22,7 @@
               <img :src="userAvatar" alt="avatar" class="w-full h-full object-cover" />
             </div>
             
-            <!-- Botón de editar avatar -->
+            <!-- Botón de editar avatar 
             <button
               @click="openAvatarEditor"
               class="absolute -bottom-2 -right-2 w-10 h-10 bg-blue-600 hover:bg-blue-700 rounded-full border-4 border-white dark:border-gray-800 flex items-center justify-center transition-all duration-200 group-hover:scale-110 transform shadow-lg hover:shadow-xl"
@@ -31,7 +31,7 @@
               <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
               </svg>
-            </button>
+            </button>-->
             
             <!-- Indicador de estado online -->
             <div class="absolute -bottom-1 left-2 w-6 h-6 bg-green-500 rounded-full border-3 border-white dark:border-gray-800 flex items-center justify-center">
