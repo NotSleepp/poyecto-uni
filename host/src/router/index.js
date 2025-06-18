@@ -117,6 +117,66 @@ const routes = [
         }
       }
     ]
+  },
+  {
+    path: "/biblioteca",
+    redirect: "/biblioteca/biblioteca-virtual",
+    children: [
+      {
+        path: "biblioteca-virtual",
+        name: "biblioteca-virtual",
+        component: async () => {
+          console.log('📚 Intentando cargar Biblioteca Virtual...');
+          NProgress.start();
+          try {
+            console.log('📦 Importando módulo Biblioteca...');
+            const module = await import("biblioteca/BibliotecaView");
+            console.log('✅ Módulo Biblioteca Virtual importado:', module);
+            NProgress.done();
+            return module.default;
+          } catch (error) {
+            console.error('❌ Error cargando Biblioteca Virtual:', error);
+            NProgress.done();
+            eventBus.emit(EventTypes.ERROR, {
+              message: "Error al cargar la Biblioteca Virtual",
+              error
+            });
+            throw error;
+          }
+        },
+        meta: {
+          title: "Biblioteca Virtual",
+          requiresAuth: true
+        }
+      },
+      {
+        path: "catalogo",
+        name: "catalogo-biblioteca",
+        component: async () => {
+          console.log('📚 Intentando cargar Catálogo Biblioteca...');
+          NProgress.start();
+          try {
+            console.log('📦 Importando módulo Catálogo...');
+            const module = await import("biblioteca/CatalogView");
+            console.log('✅ Módulo Catálogo importado:', module);
+            NProgress.done();
+            return module.default;
+          } catch (error) {
+            console.error('❌ Error cargando Catálogo Biblioteca:', error);
+            NProgress.done();
+            eventBus.emit(EventTypes.ERROR, {
+              message: "Error al cargar el Catálogo de Biblioteca",
+              error
+            });
+            throw error;
+          }
+        },
+        meta: {
+          title: "Catálogo Biblioteca",
+          requiresAuth: true
+        }
+      }
+    ]
   }
 ];
 

@@ -19,7 +19,7 @@ export function initFetchInterceptor() {
       const response = await originalFetch(resource, { ...config, headers })
 
       // Intentar obtener el nuevo token
-      const newToken = response.headers.get("x-new-token")
+      const newToken = response.headers.get("x-new-token") || response.headers.get("X-New-Token")
       if (newToken) {
         localStorage.setItem("token", newToken)
       }

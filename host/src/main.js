@@ -28,7 +28,9 @@ const initApp = async () => {
     await Promise.allSettled([
       import('home/store').then(() => console.log('✅ Store remoto cargado')),
       // `perfil/careerStore` puede no estar disponible en ciertos entornos; por eso lo manejamos de forma resiliente.
-      import('perfil/careerStore').then(() => console.log('✅ Store de carreras cargado'))
+      import('perfil/careerStore').then(() => console.log('✅ Store de carreras cargado')),
+      // Pre-carga de store compartido de Biblioteca
+      import('biblioteca/sharedStore').then(() => console.log('✅ Store de Biblioteca cargado'))
     ]);
     console.log('✅ Todos los módulos remotos cargados correctamente');
 

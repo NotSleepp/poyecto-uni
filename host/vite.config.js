@@ -34,6 +34,11 @@ export default defineConfig({
           external: "https://autogestion2.atlantida.edu.ar/frontend/perfil/assets/remoteEntry.js",
           format: 'esm',
           from: 'vite'
+        },
+        biblioteca: {
+          external: "https://autogestion2.atlantida.edu.ar/frontend/biblioteca/assets/remoteEntry.js",
+          format: 'esm',
+          from: 'vite'
         }
       },
       // Aseguramos que host y remotos compartan **la misma** instancia de Vue, Vue-Router y Pinia.
