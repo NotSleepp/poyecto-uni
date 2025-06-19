@@ -85,20 +85,7 @@ export default defineConfig({
       '/api': {
         target: 'https://backend.autogestion.atlantida.edu.ar',
         changeOrigin: true,
-        secure: false,
-        configure: (proxyServer) => {
-          proxyServer.on('proxyRes', (proxyRes) => {
-            const expose = proxyRes.headers['access-control-expose-headers'];
-            const headerValue = 'X-New-Token';
-            if (expose) {
-              if (!expose.toLowerCase().includes(headerValue.toLowerCase())) {
-                proxyRes.headers['access-control-expose-headers'] = `${expose}, ${headerValue}`;
-              }
-            } else {
-              proxyRes.headers['access-control-expose-headers'] = headerValue;
-            }
-          });
-        }
+        secure: false
       }
     }
   },

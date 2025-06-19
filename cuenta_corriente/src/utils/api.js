@@ -2,8 +2,7 @@ import { useAuthStore } from '../stores/authStore';
 import { useLoadingStore } from '../stores/loading';
 import eventBus, { EventTypes } from 'host/eventBus';
 
-// Si existe variable de entorno la usamos, de lo contrario usamos el proxy '/api'
-const API_BASE = import.meta.env.VITE_API_BASE || '/api';
+const API_BASE = import.meta.env.VITE_API_BASE || 'https://backend.autogestion.atlantida.edu.ar';
 //const API_BASE = import.meta.env.VITE_API_BASE || 'http://10.8.0.4:3000';
 
 

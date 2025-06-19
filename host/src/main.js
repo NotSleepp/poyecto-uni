@@ -14,8 +14,6 @@ import { initFetchInterceptor } from "./utils/fetchInterceptor";
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/themes/light.css';
 import 'tippy.js/animations/shift-away.css';
-import eventBus, { EventTypes } from './utils/eventBus';
-import { useAuthStore } from './stores/authStore';
 
 // Definir la URL de la API como constante global
 export const API_URL = "https://backend.autogestion.atlantida.edu.ar/api";
@@ -83,14 +81,6 @@ const initApp = async () => {
       console.error('🔍 Componente:', vm);
       console.error('ℹ️ Info:', info);
     };
-
-    // Sincronizar token si llega desde micro-fronts
-    eventBus.on(EventTypes.DATA_UPDATED, (payload) => {
-      if (payload?.type === 'token-updated' && payload.token) {
-        const store = useAuthStore();
-        store.setToken(payload.token);
-      }
-    });
 
     console.log('🎯 Intentando montar la aplicación...');
     app.mount("#app");

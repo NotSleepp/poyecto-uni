@@ -267,8 +267,6 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import eventBus, { EventTypes } from 'host/eventBus';
-import { useAuthStore } from '../stores/authStore';
 import BaseCard from '../components/BaseCard.vue';
 import {
   BanknotesIcon,
@@ -300,88 +298,9 @@ const conceptosPagos = ref({}); // agrupado por año
 const planesPago = ref([]);
 const saldoFavor = ref(0);
 
-// -- Helper: selección de carrera y obtención de nuevo token --
-async function ensureCareerToken() {
-  try {
-    // 1. Obtener todas las carreras disponibles (cache primero)
-    let carreras = [];
-    try {
-      const cached = localStorage.getItem('mis_carreras');
-      if (cached) carreras = JSON.parse(cached);
-    } catch (_) {}
-
-    if (!carreras?.length) {
-      const res = await apiFetch('/user/carreras', { method: 'GET' });
-      carreras = res?.datos || res;
-      localStorage.setItem('mis_carreras', JSON.stringify(carreras));
-    }
-
-    if (!Array.isArray(carreras) || carreras.length === 0) {
-      console.warn('[CuentaCorriente] El usuario no posee carreras disponibles');
-      return;
-    }
-
-    // ¿Tenemos carrera elegida previamente?
-    const lastCareer = localStorage.getItem('career_selected');
-    if (lastCareer && carreras.some(c=> String(c.pkinscripcion_carrera) === lastCareer)) {
-      await apiFetch('/user/carrera', {
-        method: 'POST',
-        body: JSON.stringify({ pkinscripcion_carrera: Number(lastCareer) })
-      });
-      return;
-    }
-
-    // Si sólo hay una carrera, usamos esa automáticamente
-    if (carreras.length === 1) {
-       await apiFetch('/user/carrera', {
-         method: 'POST',
-         body: JSON.stringify({ pkinscripcion_carrera: carreras[0].pkinscripcion_carrera }),
-       });
-       localStorage.setItem('career_selected', carreras[0].pkinscripcion_carrera);
-       return;
-     }
-
-    // 2. Mostrar modal de selección
-    const SelectCarreraModal = (await import('../components/SelectCarreraModal.vue')).default;
-
-    await new Promise((resolve, reject) => {
-      const handleDataUpdated = async (payload) => {
-        if (payload?.type === 'career-selected') {
-          eventBus.off(EventTypes.DATA_UPDATED, handleDataUpdated);
-          try {
-            // Simplemente llama usando apiFetch que ya se encarga de capturar X-New-Token mediante el interceptor
-            await apiFetch('/user/carrera', {
-              method: 'POST',
-              body: JSON.stringify({ pkinscripcion_carrera: payload.pkinscripcion_carrera })
-            });
-            localStorage.setItem('career_selected', payload.pkinscripcion_carrera);
-            resolve();
-          } catch (e) {
-            reject(e);
-          }
-        }
-      };
-
-      eventBus.on(EventTypes.DATA_UPDATED, handleDataUpdated);
-
-      eventBus.emit(EventTypes.SHOW_MODAL, {
-        title: 'Seleccionar Carrera',
-        component: SelectCarreraModal,
-        props: { carreras },
-        hideActions: true,
-      });
-    });
-  } catch (e) {
-    console.error('[CuentaCorriente] Error seleccionando carrera:', e);
-  }
-}
-
 onMounted(async () => {
-  // Asegurar token con carrera seleccionada antes de continuar
-  await ensureCareerToken();
-
   try {
-    const { datos } = await apiFetch('/cuentacorriente', {
+    const { datos } = await apiFetch('/api/cuentacorriente', {
       method: 'POST',
       body: JSON.stringify({})
     });
