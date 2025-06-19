@@ -1,4 +1,5 @@
 import { useLoadingStore } from "../stores/loadingStore"
+import { useAuthStore } from "../stores/authStore"
 
 export function initFetchInterceptor() {
   const originalFetch = window.fetch
@@ -9,7 +10,10 @@ export function initFetchInterceptor() {
 
     try {
       const [resource, config = {}] = args
-      const token = localStorage.getItem("token")
+      const authStore = useAuthStore()
+      const token = authStore.token?.value ?? authStore.token ?? localStorage.getItem("token")
+
+      console.log('[HOST Fetch] →', resource, 'tok', token?.slice?.(0,10))
 
       const headers = {
         ...config.headers,
@@ -21,6 +25,10 @@ export function initFetchInterceptor() {
       // Intentar obtener el nuevo token
       const newToken = response.headers.get("x-new-token") || response.headers.get("X-New-Token")
       if (newToken) {
+        console.log('[HOST Fetch] nuevo token', newToken?.slice?.(0,10))
+        // 1. Actualizar Pinia
+        authStore.setToken(newToken)
+        // 2. Persistir
         localStorage.setItem("token", newToken)
       }
 

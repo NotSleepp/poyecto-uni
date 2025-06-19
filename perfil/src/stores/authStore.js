@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia';
+import { token as fallbackToken } from '../token.js';
 
 // Store de autenticación local (fallback cuando el host remoto no expone ./authStore)
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    token: localStorage.getItem('token'),
+    token: localStorage.getItem('token') || fallbackToken,
     user: null,
   }),
   getters: {

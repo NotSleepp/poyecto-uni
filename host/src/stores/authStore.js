@@ -18,6 +18,7 @@ export const useAuthStore = defineStore('auth', () => {
       isAuthenticated.value = true
       //sharedStore.setToken(token)
       fetchUserProfile()
+      cacheUserCareers()
     }
     isReady.value = true
   }
@@ -53,8 +54,9 @@ export const useAuthStore = defineStore('auth', () => {
           email: data.email
         }
 
-        // Obtener datos personales inmediatamente
+        // Obtener datos personales inmediatamente y prefetch carreras
         await fetchUserProfile()
+        cacheUserCareers()
         
         // Establecer autenticación después de obtener todos los datos
         isAuthenticated.value = true
@@ -185,6 +187,21 @@ export const useAuthStore = defineStore('auth', () => {
     }
     tokenRef.value = newToken
     isAuthenticated.value = !!newToken
+  }
+
+  /* ---- Prefetch carreras para micro-fronts ---- */
+  async function cacheUserCareers() {
+    try {
+      const response = await fetch(`${API_URL}/user/carreras`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (!response.ok) return;
+      const data = await response.json();
+      localStorage.setItem('mis_carreras', JSON.stringify(data));
+    } catch (_) { /* silencioso */ }
   }
 
   return {

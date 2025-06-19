@@ -177,6 +177,72 @@ const routes = [
         }
       }
     ]
+  },
+  {
+    path: "/cuenta-corriente",
+    redirect: "/cuenta-corriente/cuenta-corriente",
+    children: [
+      {
+        path: "cuenta-corriente",
+        name: "cuenta-corriente-view",
+        component: async () => {
+          NProgress.start();
+          try {
+            const module = await import("cuenta_corriente/CuentaCorrienteView");
+            NProgress.done();
+            return module.default;
+          } catch (error) {
+            NProgress.done();
+            eventBus.emit(EventTypes.ERROR, {
+              message: "Error al cargar Cuenta Corriente",
+              error
+            });
+            throw error;
+          }
+        },
+        meta: { title: "Cuenta Corriente", requiresAuth: true }
+      },
+      {
+        path: "matriculacion",
+        name: "cuenta-corriente-matriculacion",
+        component: async () => {
+          NProgress.start();
+          try {
+            const module = await import("cuenta_corriente/MatriculacionView");
+            NProgress.done();
+            return module.default;
+          } catch (error) {
+            NProgress.done();
+            eventBus.emit(EventTypes.ERROR, {
+              message: "Error al cargar Matriculación",
+              error
+            });
+            throw error;
+          }
+        },
+        meta: { title: "Matriculación", requiresAuth: true }
+      },
+      {
+        path: "cupon-pago",
+        name: "cuenta-corriente-cupon-pago",
+        component: async () => {
+          NProgress.start();
+          try {
+            const module = await import("cuenta_corriente/CuponPagoView");
+            NProgress.done();
+            return module.default;
+          } catch (error) {
+            NProgress.done();
+            eventBus.emit(EventTypes.ERROR, {
+              message: "Error al cargar Cupón de Pago",
+              error
+            });
+            throw error;
+          }
+        },
+        meta: { title: "Cupón de Pago", requiresAuth: true }
+      }
+    ]
   }
 ];
 
