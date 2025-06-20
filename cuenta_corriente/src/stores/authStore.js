@@ -1,11 +1,9 @@
 import { defineStore } from 'pinia';
-// Token de prueba pegado localmente. En producción, el host establecerá el token vía login.
-import { token as fallbackToken } from '../token.js';
 
-// Store de autenticación local (fallback cuando el host remoto no expone ./authStore)
+// Store de autenticación local
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    token: localStorage.getItem('token') || fallbackToken,
+    token: localStorage.getItem('token'),
     user: null,
   }),
   getters: {
@@ -26,4 +24,4 @@ export const useAuthStore = defineStore('auth', {
       this.user = user;
     },
   },
-}); 
+});

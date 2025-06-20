@@ -347,3 +347,48 @@ Las respuestas de error siguen este formato:
   "estado": false,
   "mensaje": "Descripción del error"
 }
+
+
+get: https://backend.autogestion.atlantida.edu.ar/api/user/carreras
+
+[
+    {
+        "pkinscripcion_carrera": 2185,
+        "carrera": "LICENCIATURA EN INFORMÃTICA",
+        "carrera_bis": "LICENCIATURA EN INFORMÃTICA",
+        "pkplan": 15,
+        "denominacion": "RESOL. NÂº 2130/97 - NOTA NÂº 1091/08",
+        "fkcondicion_academica": 2,
+        "condicion_academica": "INACTIVO",
+        "legajo": "08.02.LI.0016"
+    },
+    {
+        "pkinscripcion_carrera": 2194,
+        "carrera": "LICENCIATURA EN INFORMÃTICA",
+        "carrera_bis": "LICENCIATURA EN INFORMÃTICA",
+        "pkplan": 15,
+        "denominacion": "RESOL. NÂº 2130/97 - NOTA NÂº 1091/08",
+        "fkcondicion_academica": 3,
+        "condicion_academica": "GRADUADO",
+        "legajo": "08.02.LI.0029"
+    },
+    {
+        "pkinscripcion_carrera": 15493,
+        "carrera": "CURSO DE INGLÃ©S",
+        "carrera_bis": "CURSO DE INGLES",
+        "pkplan": 61,
+        "denominacion": "CURSO DE INGLÃ‰S 2021",
+        "fkcondicion_academica": 1,
+        "condicion_academica": "ACTIVO",
+        "legajo": "21.06.IN.0648"
+    }
+]
+
+
+post https://backend.autogestion.atlantida.edu.ar/api/user/carrera
+
+{
+    "pkinscripcion_carrera": 2185
+}
+
+X-New-Token

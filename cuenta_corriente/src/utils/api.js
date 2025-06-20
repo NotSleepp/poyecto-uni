@@ -2,7 +2,8 @@ import { useAuthStore } from '../stores/authStore';
 import { useLoadingStore } from '../stores/loading';
 import eventBus, { EventTypes } from 'host/eventBus';
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'https://backend.autogestion.atlantida.edu.ar';
+// Usar URL relativa con el prefijo /api para que las solicitudes se manejen a través del proxy del navegador
+const API_BASE = '/api';
 //const API_BASE = import.meta.env.VITE_API_BASE || 'http://10.8.0.4:3000';
 
 
@@ -25,6 +26,13 @@ export async function apiFetch(endpoint, options = {}) {
       eventBus.emit(EventTypes.ERROR, new Error('Sesión expirada'));
       authStore.logout();
     }
+    
+    // Verificar si existe el header X-New-Token o x-new-token
+    const newToken = res.headers.get('X-New-Token') || res.headers.get('x-new-token');
+    if (newToken) {
+      console.log('[API] Recibido nuevo token de carrera:', newToken);
+      authStore.setToken(newToken);
+    }
 
     const data = await res.json();
 
@@ -39,4 +47,4 @@ export async function apiFetch(endpoint, options = {}) {
   } finally {
     loadingStore.hide();
   }
-} 
+}

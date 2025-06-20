@@ -121,7 +121,6 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
 import BaseCard from '../components/BaseCard.vue';
 import {
   ReceiptPercentIcon,
@@ -135,18 +134,60 @@ import {
   BuildingLibraryIcon,
   DevicePhoneMobileIcon
 } from '@heroicons/vue/24/outline';
+import { ref, computed, onMounted } from 'vue';
+import { apiFetch } from '../utils/api.js';
+import eventBus, { EventTypes } from 'host/eventBus';
 
 function formatNumber(n){ return n.toLocaleString('es-AR',{minimumFractionDigits:2, maximumFractionDigits:2}); }
 const formatDate = (d)=> new Date(d).toLocaleDateString('es-AR');
 
-// Data mock
-const conceptos = ref([
-  {id:1,nombre:'Duplicado Analítico Final', original:44566, descuento:4456, importe1:40110, importe2:44566, seleccionado:false},
-  {id:2,nombre:'Cuota Mensual Abril 2025', original:25000, descuento:2500, importe1:22500, importe2:25000, seleccionado:false},
-  {id:3,nombre:'Matrícula Anual 2025', original:60000, descuento:6000, importe1:54000, importe2:60000, seleccionado:false},
-]);
+// Datos de conceptos a pagar
+const conceptos = ref([]);
+const fechaVencimiento = ref(new Date().toISOString().split('T')[0]);
+const isLoading = ref(false);
+const error = ref(null);
 
-const fechaVencimiento = ref('2025-04-01');
+// Cargar datos al montar el componente
+onMounted(async () => {
+  await loadData();
+});
+
+async function loadData() {
+  try {
+    isLoading.value = true;
+    error.value = null;
+    
+    // Hacer la llamada a la API
+    const response = await apiFetch('/cuentacorriente/conceptos-pago', {
+      method: 'POST',
+      body: JSON.stringify({})
+    });
+    
+    if (response.datos && response.datos.conceptos) {
+      conceptos.value = response.datos.conceptos.map(c => ({
+        ...c,
+        seleccionado: false
+      }));
+      
+      if (response.datos.fecha_vencimiento) {
+        fechaVencimiento.value = response.datos.fecha_vencimiento;
+      }
+    } else {
+      conceptos.value = [];
+    }
+    
+    // Emitir evento de éxito
+    eventBus.emit(EventTypes.SUCCESS, {
+      message: 'Datos de conceptos a pagar cargados',
+      timestamp: new Date().toISOString()
+    });
+  } catch (e) {
+    error.value = e.message || 'Error al cargar los conceptos a pagar';
+    eventBus.emit(EventTypes.ERROR, e);
+  } finally {
+    isLoading.value = false;
+  }
+}
 
 // Medios de pago (solo ilustrativos)
 const mediosPago = [
